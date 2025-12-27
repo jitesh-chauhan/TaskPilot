@@ -1,4 +1,4 @@
----
+
 **Version:** 0.1.0  
 **Status:** Active Draft  
 
@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 ### 3. Environment Configuration
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the cofig directory:
 
 ```env
 DB_NAME="todo_app"
@@ -40,8 +40,12 @@ JWT_SECRET_KEY="change_me_later"
 
 ### 4. Running
 
-```http://127.0.0.1:8000*`
+```bash
+python run.py
+```
 
+### The application will be available at:
+    http://127.0.0.1:8003
 
 ## API Documentation
 
@@ -52,12 +56,12 @@ JWT_SECRET_KEY="change_me_later"
 ---
 #### Swagger UI
 
-    http://127.0.0.1:8000/docs
+    http://127.0.0.1:8003/docs
 
 
 #### ReDoc
 
-    http://127.0.0.1:8000/redoc
+    http://127.0.0.1:8003/redoc
 
 ##  API Endpoints
 
