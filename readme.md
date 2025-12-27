@@ -1,26 +1,18 @@
 ---
+**Version:** 0.1.0  
+**Status:** Active Draft  
 
-# To-Do App API Documentation
-
-**Version:** 0.1.0
-
-**Status:** Active Draft
-
-**Tech Stack:** Django (Backend), Flutter (Frontend), PostgreSQL (Database)
+**Tech Stack:** FastAPI (Backend), MongoDB (Database)
 
 ## 📌 Overview
 
-The To-Do App API provides a robust backend for user authentication, role management, and task orchestration. It is designed to support a multi-user environment (Patients, Doctors, and Agents).
+The To-Do App API provides a backend service for user authentication and task management.
+It allows users to create, update, retrieve, and delete to-do items in a secure and
+scalable manner.
 
----
+The API is built using FastAPI for high performance and MongoDB for flexible,
+document-oriented data storage. It is suitable for both web and mobile clients.
 
-## 🚀 Getting Started
-
-### 1. Prerequisites
-
-* Python 3.10+
-* PostgreSQL
-* Virtual Environment tool (`venv`)
 
 ### 2. Installation & Setup
 
@@ -40,21 +32,15 @@ pip install -r requirements.txt
 Create a `.env` file in the root directory:
 
 ```env
-DEBUG=True
-SECRET_KEY="your-django-secret-key"
-DATABASE_URL="postgres://user:password@localhost:5432/todo_app"
+DB_NAME="todo_app"
+DATABASE_URL="mongodb://localhost:27017"
 JWT_SECRET_KEY="change_me_later"
 
 ```
 
 ### 4. Running
 
-```bash
-python run.py
-
-```
-
-*The server will be available at: `http://127.0.0.1:8000*`
+```http://127.0.0.1:8000*`
 
 
 ## API Documentation
