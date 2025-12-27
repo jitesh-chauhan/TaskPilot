@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Add Task | TodoMaster{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Create New Task</h4>
+            </div>
+            <div class="card-body">
+
+                <div id="status-container">
+                    {% if msg %}
+                    <span class="text-success fw-bold">✓ {{ msg }}</span>
+                    {% elif error %}
+                    <span class="text-danger fw-bold">⚠ {{ error }}</span>
+                    {% endif %}
+                </div>
+                <form action="/add-todo" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Task Title</label>
+                        <input class="form-control" name="todo" placeholder="What needs to be done?" required
+                               type="text">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description (Optional)</label>
+                        <textarea class="form-control" name="description" placeholder="Add some details..."
+                                  rows="2"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Due Date</label>
+                            <input class="form-control" name="due_date" required type="date">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Priority</label>
+                            <select class="form-select" name="priority">
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option selected value="Low">Low</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1" type="submit">Save Task</button>
+                        <a class="btn btn-outline-secondary" href="/home">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

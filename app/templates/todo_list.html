@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}My Tasks | TaskPilot{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="card-title mb-0">My Tasks</h3>
+            <a class="btn btn-primary" href="/add-todo">+ Add New Task</a>
+        </div>
+        <div class="card shadow-sm mb-4">
+
+
+            <div id="status-container">
+                {% if msg %}
+                <span class="text-success fw-bold">✓ {{ msg }}</span>
+                {% elif error %}
+                <span class="text-danger fw-bold">⚠ {{ error }}</span>
+                {% endif %}
+            </div>
+
+            <ul class="list-group list-group-flush">
+                {% for todo in todos %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">{{ todo.title }}</span><br>
+                        <small class="text-muted">Due: {{ todo.due_date }} | Priority: {{ todo.priority }}</small>
+                    </div>
+                    <div class="btn-group">
+                        <form action="/delete-todo/{{ todo.id }}" method="post" style="display:inline;">
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+                {% else %}
+                <li class="list-group-item text-center text-muted py-4">
+                    No todos found. Click "Add New Task" to get started!
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script>
+        window.onload = function() {
+            const url = new URL(window.location);
+            const statusContainer = document.getElementById('status-container');
+
+            if (url.searchParams.has('msg') || url.searchParams.has('error')) {
+                setTimeout(() => {
+                    if (statusContainer) {
+                        statusContainer.style.display = 'none';
+                    }
+                    url.searchParams.delete('msg');
+                    url.searchParams.delete('error');
+                    window.history.replaceState({}, document.title, url.pathname);
+
+                }, 2000);
+            }
+        }
+    </script>
+    {% endblock %}

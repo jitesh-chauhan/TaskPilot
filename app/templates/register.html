@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | TaskPilot{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">TaskPilot</h2>
+                    <p class="text-muted">Create your account to start organizing.</p>
+                </div>
+                <div id="status-container">
+                    {% if msg %}
+                    <span class="text-success fw-bold">✓ {{ msg }}</span>
+                    {% elif error %}
+                    <span class="text-danger fw-bold">⚠ {{ error }}</span>
+                    {% endif %}
+                </div>
+                <form action="/register" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Username</label>
+                            <input class="form-control" name="username" placeholder="johndoe123" required type="text">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input class="form-control" name="email" placeholder="name@example.com" required
+                                   type="email">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input class="form-control" minlength="8" name="password" required type="password">
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-semibold">Confirm Password</label>
+                            <input class="form-control" name="confirm_password" required type="password">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm" type="submit">
+                        Create My Account
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0 text-muted">Already have an account? <a class="text-primary fw-bold text-decoration-none"
+                                                                           href="/login">Log
+                        In</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

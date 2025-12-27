@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Login | TaskPilot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-8">
+        <div class="card shadow-sm border-0 mt-5">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">Welcome Back</h2>
+
+                <div id="status-container">
+                    {% if msg %}
+                    <span class="text-success fw-bold">✓ {{ msg }}</span>
+                    {% elif error %}
+                    <span class="text-danger fw-bold">⚠ {{ error }}</span>
+                    {% endif %}
+                </div>
+                <form action="/login" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input class="form-control" name="email" placeholder="name@example.com" required type="email" required
+        pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        title="Please enter a valid email address">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <input class="form-control" name="password" placeholder="••••••••" required type="password">
+                    </div>
+                    <button class="btn btn-primary w-100 py-2" type="submit">Login</button>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="text-muted small">Don't have an account? <a href="/register">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
