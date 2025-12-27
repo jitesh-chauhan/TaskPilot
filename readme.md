@@ -6,155 +6,106 @@
 
 **Status:** Active Draft
 
-## Overview
+**Tech Stack:** Django (Backend), Flutter (Frontend), PostgreSQL (Database)
 
-Welcome to the To-Do App API. This backend handles user registration, authentication, and full CRUD operations for task management.
+## 📌 Overview
 
-### Quick Notes
-
-* **Base URL:** (Assumed local) `http://localhost:8003`
-* **Timestamps:** All dates (`due_date`, `created_at`) are stored as **UNIX timestamps (strings)**.
-* **Responses:** Most API responses return a structured JSON object. Errors generally follow a standard format with a `message`.
+The To-Do App API provides a robust backend for user authentication, role management, and task orchestration. It is designed to support a multi-user environment (Patients, Doctors, and Agents).
 
 ---
 
-## 1. User Management
+## 🚀 Getting Started
 
-Before managing tasks, we need to handle user accounts.
+### 1. Prerequisites
 
-### Register a User
+* Python 3.10+
+* PostgreSQL
+* Virtual Environment tool (`venv`)
 
-Create a new user account.
+### 2. Installation & Setup
 
-* **Endpoint:** `POST /api/v1/users`
-* **Content-Type:** `application/json`
+```bash
+# Create and Activate Virtual Environment
+python -m venv .venv
+source .venv/bin/activate   # Linux / macOS
+.venv\Scripts\activate      # Windows
 
-**Request Body:**
-
-```json
-{
-  "email": "jane@example.com",
-  "password": "securepassword123",
-  "username": "Jane Doe" // (Optional additional props allowed)
-}
-
-```
-
-**Response (200 OK):**
-
-```json
-{}
+# Install Dependencies
+pip install -r requirements.txt
 
 ```
 
-### Login
+### 3. Environment Configuration
 
-Authenticate a user.
+Create a `.env` file in the root directory:
 
-* **Endpoint:** `POST /api/v1/login`
-* **Content-Type:** `application/json`
-
-**Request Body:**
-
-```json
-{
-  "email": "jane@example.com",
-  "password": "securepassword123"
-}
+```env
+DEBUG=True
+SECRET_KEY="your-django-secret-key"
+DATABASE_URL="postgres://user:password@localhost:5432/todo_app"
+JWT_SECRET_KEY="change_me_later"
 
 ```
 
-### Get User Details
+### 4. Running
 
-Fetch specific user info.
+```bash
+python run.py
 
-* **Endpoint:** `GET /api/v1/users`
-* **Query Params:**
-* `email` (Required): The email of the user to look up.
+```
+
+*The server will be available at: `http://127.0.0.1:8000*`
 
 
-
-**Example Request:**
-`GET /api/v1/users?email=jane@example.com`
+## API Documentation
 
 ---
 
-## 2. To-Do Operations
+### FastAPI automatically generates interactive API documentation.
 
-The core logic for managing the task list.
+---
+#### Swagger UI
 
-### Create a To-Do
-
-Adds a new item to the list.
-
-* **Endpoint:** `POST /api/v1/todos/create`
-* **Content-Type:** `application/json`
-
-**Request Body:**
-You can send arbitrary properties, but the backend expects the standard To-Do structure:
-
-```json
-{
-  "title": "Buy Groceries",
-  "description": "Milk, Eggs, Bread",
-  "priority": "High",          // String: Low, Medium, High
-  "due_date": "1730000000", // UNIX timestamp as string
-  "email": "name@email.com"
-}
-
-```
-
-### Get Todos
-
-Fetch all tasks associated with a specific user.
-
-* **Endpoint:** `GET /api/v1/todos`
-* **Query Params:**
-* `email` (Required): The user's email address.
+    http://127.0.0.1:8000/docs
 
 
+#### ReDoc
 
-**Response (200 OK):**
-Returns a `TodoResponse` object.
+    http://127.0.0.1:8000/redoc
 
-```json
-{
-  "status": "success",
-  "message": "Todos fetched successfully",
-  "data": [
-    {
-      "id": "todo_1",
-      "title": "Buy Groceries",
-      "completed": false,
-      "priority": "Medium",
-      "created_at": "1729999999",
-      "updated_at": "1729999999",
-      "is_deleted": false,
-      "deleted_at": ""
-    }
-  ]
-}
+##  API Endpoints
 
-```
+### 1. User Management
 
-### Delete a To-Do
-
-Permanently removes a task.
-
-* **Endpoint:** `DELETE /api/v1/todos`
-* **Query Params:**
-* `todo_id` (Required): The unique ID of the todo item.
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/users` | Register a new user |
+| `POST` | `/api/v1/login` | Authenticate and get token |
+| `GET` | `/api/v1/users` | Fetch user details (Query: `email`) |
 
 
+### 2. To-Do Operations
 
-**Example Request:**
-`DELETE /api/v1/todos?todo_id=todo_1`
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/todos/create` | Create a new task |
+| `GET` | `/api/v1/todos` | List all tasks for a user |
+| `DELETE` | `/api/v1/todos` | Remove a task (Query: `todo_id`) |
+
+### 3. Frontend Page Routes
+
+
+* `GET /` - Home/Redirect
+* `GET /home` - Dashboard
+* `GET /login` & `POST /login` - Login Page logic
+* `GET /register` & `POST /register` - Registration Page logic
+* `GET /add-todo` & `POST /add-todo` - Task Creation Page
+* `POST /delete-todo/{todo_id}` - Form action to delete a task
+* `GET /logout` - Logs the user out
 
 ---
 
-## 3. Data Models
-
-Here is the structure of the objects used in the API.
+## 📊 Data Models
 
 ### Todo Item
 
@@ -185,15 +136,35 @@ Here is the structure of the objects used in the API.
 | `updated_at` | String  | UNIX timestamp **(ms)** |
 
 ---
+---
 
-## 4. Frontend Page Routes
+## 📂 Project Structure
 
-*Just for reference.* These endpoints render the HTML pages or handle form redirects. If you are building a decoupled frontend (like React or Flutter), stick to the API endpoints above.
+```text
+.
+├── app
+│   ├── apis            # API Logic & Pydantic Models (Auth, Todos, Users)
+│   ├── database        # DB Connection
+│   ├── routes          # Unified Router Logic
+│   ├── templates       # HTML Templates
+│   └── utils           # Auth & Logging Helpers
+├── core                # Global Config & Settings
+├── tests               # Pytest Suite
+├── requirements.txt    # Production Dependencies
+└── run.py              # Application Entry Point
 
-* `GET /` - Home/Redirect
-* `GET /home` - Dashboard
-* `GET /login` & `POST /login` - Login Page logic
-* `GET /register` & `POST /register` - Registration Page logic
-* `GET /add-todo` & `POST /add-todo` - Task Creation Page
-* `POST /delete-todo/{todo_id}` - Form action to delete a task
-* `GET /logout` - Logs the user out
+```
+
+---
+
+## 🧪 Testing
+
+The project uses `pytest` for automated testing.
+
+```bash
+# Run all tests
+./run_tests.sh
+
+```
+
+---
