@@ -42,7 +42,7 @@ class TodoCreate(BaseModel):
     due_date: str
     email: EmailStr
 
-class TodoDeleteResponse(BaseModel):
+class TodoUpdateResponse(BaseModel):
     data : List[Any] = []
     status: str = "success"
     message: str = "Success Message"

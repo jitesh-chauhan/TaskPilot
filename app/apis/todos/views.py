@@ -135,3 +135,40 @@ async def delete_todo(todo_id: str, db: AsyncDatabase = Depends(get_db)):
     except Exception as e:
         logger.exception("Unhandled error while deleting todo | todo_id=%s", todo_id)
         return ORJSONResponse({"data": [], "message": str(e), "status": "failed"}, 500)
+
+
+
+
+
+
+async def complete_todo(todo_id: str, db: AsyncDatabase = Depends(get_db)):
+    try:
+        logger.info("Mark complete todo request received | todo_id=%s", todo_id)
+        result = await db.todos.update_one(
+            {"_id": ObjectId(todo_id)},
+            {"$set": {"completed": True}},
+        )
+
+        if result.modified_count == 0:
+            logger.warning("Todo not found | todo_id=%s", todo_id)
+            raise HTTPException(status_code=404, detail="Todo not found")
+
+        logger.info("Todo marked as completed | todo_id=%s", todo_id)
+
+        return ORJSONResponse(
+            {"data": [], "message": "Todo marked as completed", "status": "success"},
+            status_code=200,
+        )
+
+    except HTTPException as e:
+        logger.warning(
+            "Handled error while deleting todo | todo_id=%s | reason=%s",
+            todo_id,
+            e.detail,
+        )
+        return ORJSONResponse(
+            {"data": [], "message": str(e.detail), "status": "failed"}, e.status_code
+        )
+    except Exception as e:
+        logger.exception("Unhandled error while deleting todo | todo_id=%s", todo_id)
+        return ORJSONResponse({"data": [], "message": str(e), "status": "failed"}, 500)

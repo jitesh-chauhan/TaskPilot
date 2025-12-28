@@ -76,11 +76,12 @@ python run.py
 
 ### 2. To-Do Operations
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/v1/todos/create` | Create a new task |
-| `GET` | `/api/v1/todos` | List all tasks for a user |
-| `DELETE` | `/api/v1/todos` | Remove a task (Query: `todo_id`) |
+| Method   | Endpoint                 | Description                        |
+|----------|--------------------------|------------------------------------|
+| `POST`   | `/api/v1/todos/create`   | Create a new task                  |
+| `GET`    | `/api/v1/todos`          | List all tasks for a user          |
+| `DELETE` | `/api/v1/todos`          | Remove a task (Query: `todo_id`)   |
+| `PUT`    | `/api/v1/todos/complete` | Complete a task (Query: `todo_id`) |
 
 ### 3. Frontend Page Routes
 
@@ -91,6 +92,7 @@ python run.py
 * `GET /register` & `POST /register` - Registration Page logic
 * `GET /add-todo` & `POST /add-todo` - Task Creation Page
 * `POST /delete-todo/{todo_id}` - Form action to delete a task
+* `PUT /complete-todo/{todo_id}` -Form action to complete a task
 * `GET /logout` - Logs the user out
 
 ---

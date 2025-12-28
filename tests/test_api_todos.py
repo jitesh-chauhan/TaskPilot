@@ -115,3 +115,85 @@ class TestTodoAPI:
         response = await client_with_mock_db.delete(f"/api/v1/todos?todo_id={todo_id}")
 
         assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_complete_todo_success(self, client_with_mock_db, mock_db):
+        mock_collection = AsyncMock()
+        result = AsyncMock()
+        result.modified_count = 1
+
+        mock_collection.update_one = AsyncMock(return_value=result)
+        mock_db.todos = mock_collection
+
+        todo_id = str(ObjectId())
+
+        response = await client_with_mock_db.put(
+            f"/api/v1/todos/complete?todo_id={todo_id}"
+        )
+
+        assert response.status_code == 200
+
+        body = response.json()
+        assert body["status"] == "success"
+        assert body["message"] == "Todo marked as completed"
+
+        mock_collection.update_one.assert_awaited_once_with(
+            {"_id": ObjectId(todo_id)},
+            {"$set": {"completed": True}},
+        )
+
+    @pytest.mark.asyncio
+    async def test_complete_todo_not_found(self, client_with_mock_db, mock_db):
+        mock_collection = AsyncMock()
+        result = AsyncMock()
+        result.modified_count = 0
+
+        mock_collection.update_one = AsyncMock(return_value=result)
+        mock_db.todos = mock_collection
+
+        todo_id = str(ObjectId())
+
+        response = await client_with_mock_db.put(
+            f"/api/v1/todos/complete?todo_id={todo_id}"
+        )
+
+        assert response.status_code == 404
+
+        body = response.json()
+        assert body["status"] == "failed"
+        assert body["message"] == "Todo not found"
+
+    @pytest.mark.asyncio
+    async def test_complete_todo_invalid_object_id(self, client_with_mock_db, mock_db):
+        mock_collection = AsyncMock()
+        mock_db.todos = mock_collection
+
+        invalid_todo_id = "not-a-valid-object-id"
+
+        response = await client_with_mock_db.put(
+            f"/api/v1/todos/complete?todo_id={invalid_todo_id}"
+        )
+
+        assert response.status_code == 500
+
+        body = response.json()
+        assert body["status"] == "failed"
+
+    @pytest.mark.asyncio
+    async def test_complete_todo_db_exception(self, client_with_mock_db, mock_db):
+        mock_collection = AsyncMock()
+        mock_collection.update_one = AsyncMock(side_effect=Exception("DB failure"))
+        mock_db.todos = mock_collection
+
+        todo_id = str(ObjectId())
+
+        response = await client_with_mock_db.put(
+            f"/api/v1/todos/complete?todo_id={todo_id}"
+        )
+
+        assert response.status_code == 500
+
+        body = response.json()
+        assert body["status"] == "failed"
+        assert "DB failure" in body["message"]
+

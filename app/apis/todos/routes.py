@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.apis.todos import views
-from app.apis.todos.model import ErrorResponse, TodoResponse, TodoCreateResponse, TodoDeleteResponse
+from app.apis.todos.model import ErrorResponse, TodoResponse, TodoCreateResponse, TodoUpdateResponse
 from app.utils.auth_utils import get_token
 
 TodoRouter = APIRouter(
@@ -26,7 +26,16 @@ TodoRouter.add_api_route("/create", views.create_todo, methods=["POST"],
                              500: {"model": ErrorResponse, "description": "Internal Server Error"}
                          })
 TodoRouter.add_api_route("", views.delete_todo, methods=["DELETE"],
-                         response_model=TodoDeleteResponse,
+                         response_model=TodoUpdateResponse,
+                         responses={
+                             401: {"model": ErrorResponse, "description": "Unauthorized"},
+                             404: {"model": ErrorResponse, "description": "User not found"},
+                             500: {"model": ErrorResponse, "description": "Internal Server Error"}
+                         }
+                         )
+
+TodoRouter.add_api_route("/complete", views.complete_todo, methods=["PUT"],
+                         response_model=TodoUpdateResponse,
                          responses={
                              401: {"model": ErrorResponse, "description": "Unauthorized"},
                              404: {"model": ErrorResponse, "description": "User not found"},

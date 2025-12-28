@@ -7,6 +7,7 @@ from app.pages.pages import (
     login_page,
     logout_user,
     register_page,
+    complete_todo_page,
 )
 
 PageRouter = APIRouter(prefix="", tags=["Pages"])
@@ -23,4 +24,5 @@ PageRouter.add_api_route(
 PageRouter.add_api_route(
     "/delete-todo/{todo_id}", delete_todo, name="todos", methods=["POST"]
 )
+PageRouter.add_api_route("/complete-todo/{todo_id}", complete_todo_page, name="todos", methods=["POST"])
 PageRouter.add_api_route("/logout", logout_user, name="todos", methods=["GET"])

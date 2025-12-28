@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import date
 
 from jose import ExpiredSignatureError
 from starlette import status
@@ -247,16 +248,16 @@ async def add_todo_page(request: Request, msg: str = None, error: str = None):
                     res.get("message"),
                 )
                 return templates.TemplateResponse(
-                    "add_todo.html", {"request": request,"error": res.get("message")}
+                    "add_todo.html", {"request": request,"error": res.get("message"), "today": date.today().isoformat()}
                 )
 
             logger.info("Todo created | email=%s", email)
             return RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
-
         return templates.TemplateResponse(
             "add_todo.html",
-            {"request": request, "user": users.get("data")[0], "error": error, "msg": msg},
+            {"request": request, "user": users.get("data")[0], "today": date.today().isoformat(), "error": error, "msg": msg},
         )
+
     except Exception:
         logger.exception("Unhandled error while loading home page")
         return templates.TemplateResponse(
@@ -268,11 +269,11 @@ async def add_todo_page(request: Request, msg: str = None, error: str = None):
 
 async def delete_todo(request: Request, todo_id: str):
     logger.info("Delete todo requested | todo_id=%s", todo_id)
+    token = request.cookies.get("access_token")
+    if not token:
+        logger.warning("Delete todo denied | missing access_token")
+        return RedirectResponse(url="/login")
     try:
-        token = request.cookies.get("access_token")
-        if not token:
-            logger.warning("Delete todo denied | missing access_token")
-            return RedirectResponse(url="/login")
 
         await api_handler("DELETE", "/todos", params={"todo_id": todo_id}, token=token)
         logger.info("Todo deleted | todo_id=%s", todo_id)
@@ -301,3 +302,23 @@ async def logout_user(request: Request):
             {"request": request, "error": "Something went wrong"},
             status_code=500,
         )
+
+
+async def complete_todo_page(request: Request, todo_id: str):
+    logger.info("Mark complete todo requested | todo_id=%s", todo_id)
+    token = request.cookies.get("access_token")
+    if not token:
+        logger.warning("Mark complete todo denied | missing access_token")
+        return RedirectResponse(url="/login")
+    try:
+        await api_handler("PUT", "/todos/complete", params={"todo_id": todo_id}, token=token)
+        logger.info("Todo deleted | todo_id=%s", todo_id)
+
+        return RedirectResponse(url="/home?msg=Task+Completed", status_code=303)
+    except Exception:
+        logger.exception("Unhandled error while loading home page")
+        return templates.TemplateResponse(
+                "error.html",
+                {"request": request, "error": "Something went wrong"},
+                status_code=500,
+            )
