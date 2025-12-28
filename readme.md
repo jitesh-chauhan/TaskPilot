@@ -2,7 +2,7 @@
 **Version:** 0.1.0  
 **Status:** Active Draft  
 
-**Tech Stack:** FastAPI (Backend), MongoDB (Database)
+**Tech Stack:** FastAPI (Backend), Jinja2 (Tempplates), MongoDB (Database)
 
 ## 📌 Overview
 
